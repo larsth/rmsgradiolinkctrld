@@ -2,12 +2,7 @@
 //that this program uses.
 package gps
 
-import (
-	"bufio"
-	"bytes"
-	"io"
-	"sync"
-)
+import "bytes"
 
 //Type Data is the filtered gps data structure that the
 //rmsgradiolinkctrld application is using.
@@ -17,13 +12,9 @@ import (
 // made concurrency safe with a read-write mutex, because it is accessed
 // concurrently by more than 1 go routine.
 type Data struct {
-	rwMutex  sync.RWMutex  `"json:-"`
-	ioReader io.Reader     `"json:-"`
-	reader   *bufio.Reader `"json:-"`
-	scanBuf  bytes.Buffer  `"json:-"`
-	ThisGps  GPSCoord      `"json:this_gps"`
-	OtherGps GPSCoord      `"json:other_gps"`
-	_        struct{}      // to prevent unkeyed literals
+	ThisGps  GPSCoord `"json:this_gps"`
+	OtherGps GPSCoord `"json:other_gps"`
+	_        struct{} // to prevent unkeyed literals
 }
 
 func (d *Data) String() string {

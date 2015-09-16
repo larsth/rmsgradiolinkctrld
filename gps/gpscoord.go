@@ -1,7 +1,6 @@
 package gps
 
 import (
-	"bufio"
 	"bytes"
 	"errors"
 	"io"
@@ -25,11 +24,10 @@ var (
 )
 
 type GPSCoord struct {
-	mutex        sync.Mutex    `"json:-"`
-	ioReader     io.Reader     `"json:-"`
-	reader       *bufio.Reader `"json:-"`
-	scanBuf      bytes.Buffer  `"json:-"`
-	jsonDocument []byte        `"json:-"`
+	mutex        sync.Mutex `"json:-"`
+	ioReader     io.Reader  `"json:-"`
+	scanBuf      []byte     `"json:-"`
+	jsonDocument []byte     `"json:-"`
 
 	ID                string       `"json:id"`
 	RecievedTimeStamp time.Time    `"json:datetime_iso3339"`
