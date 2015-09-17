@@ -3,7 +3,6 @@ package gps
 import (
 	"bytes"
 	"io"
-	"unicode/utf8"
 )
 
 //ReadFrom implements the io.ReaderFrom interface.
@@ -28,13 +27,7 @@ func (s *Scanner) ReadFrom(r io.Reader) (n int64, err error) {
 	}
 	if r != s.ioReader {
 		s.ioReader = r
-		if s.input != nil {
-			s.ggc.GiveRunes <- s.input
-			s.input = nil
-		}
-		s.input = <-s.ggc.GetRunes
 	}
-
 	p = <-s.ggc.GetBytes
 	defer func(giveBytesChan chan []byte, p []byte) {
 		giveBytesChan <- p
@@ -45,9 +38,11 @@ func (s *Scanner) ReadFrom(r io.Reader) (n int64, err error) {
 	n = int64(nInt)
 	if n > 0 {
 		pRunes = bytes.Runes(p[0:n])
-
+		if s.input == nil {
+			s.input = <-s.ggc.GetRunes
+		}
 		s.input = append(s.input, pRunes...)
-		if s.c == utf8.RuneError {
+		if len(s.input) > 0 {
 			//prime s.c with the 1st character:
 			s.c = s.input[0]
 		}
