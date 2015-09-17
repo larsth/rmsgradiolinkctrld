@@ -3,7 +3,6 @@ package gps
 import (
 	"bytes"
 	"errors"
-	"io"
 	"math"
 	"strconv"
 	"sync"
@@ -25,8 +24,6 @@ var (
 
 type GPSCoord struct {
 	mutex        sync.Mutex `"json:-"`
-	ioReader     io.Reader  `"json:-"`
-	scanBuf      []byte     `"json:-"`
 	jsonDocument []byte     `"json:-"`
 
 	ID                string       `"json:id"`
