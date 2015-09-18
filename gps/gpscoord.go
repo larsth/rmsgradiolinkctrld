@@ -23,21 +23,21 @@ var (
 )
 
 type GPSCoord struct {
-	mutex        sync.Mutex `"json:-"`
-	jsonDocument []byte     `"json:-"`
+	mutex        sync.Mutex
+	jsonDocument []byte
 
-	ID                string       `"json:id"`
-	RecievedTimeStamp time.Time    `"json:datetime_iso3339"`
-	Fix               gpsd.FixMode `"json:fix"` //FixNotSeen,FixNone,Fix2D,Fix3D
+	ID                string       `json:"id"`
+	RecievedTimeStamp time.Time    `json:"datetime_iso3339"`
+	Fix               gpsd.FixMode `json:"fix"` //FixNotSeen,FixNone,Fix2D,Fix3D
 
-	Lat float64 `"json:lat"` //Lattitude - breddegrad
-	Lon float64 `"json:lon"` //Longitude - længdegrad
-	Alt float64 `"json:alt"` //Altitude - højden
+	Lat float64 `json:"lat"` //Lattitude - breddegrad
+	Lon float64 `json:"lon"` //Longitude - længdegrad
+	Alt float64 `json:"alt"` //Altitude - højden
 
-	GpsdError         string    `"json:gpsd_error,omitempty"`
-	GpsdErrorDateTime time.Time `"json:gpsd_error_datetime_iso3339,omitempty"`
-	FetchUrl          string    `"json:fetch_url,omitempty"`
-	FetchError        string    `"json:fetch_error,omitempty"`
+	GpsdError         string    `json:"gpsd_error,omitempty"`
+	GpsdErrorDateTime time.Time `json:"gpsd_error_datetime_iso3339,omitempty"`
+	FetchUrl          string    `json:"fetch_url,omitempty"`
+	FetchError        string    `json:"fetch_error,omitempty"`
 }
 
 func (this *GPSCoord) String() string {

@@ -17,7 +17,7 @@ package gps
 //	WantErr        error
 //	WantErrVarName string
 //	HasFunc        bool
-//	Func           func(test_item *TestBenchData_func_parseGpsdJSON) error
+//	Func           func(testItem *TestBenchData_func_parseGpsdJSON) error
 //}
 
 //func (tbd *TestBenchData_func_parseGpsdJSON) String() string {
@@ -94,7 +94,7 @@ package gps
 //	//		WantData:       &Data{},
 //	//		WantErr:        nil,
 //	//		WantErrVarName: `N/A`,
-//	//		Func: func(test_item *TestBenchData_func_parseGpsdJSON) error {
+//	//		Func: func(testItem *TestBenchData_func_parseGpsdJSON) error {
 //	//			var (
 //	//				d *Data
 //	//			)
@@ -110,7 +110,7 @@ package gps
 //	//		WantData:       &Data{},
 //	//		WantErr:        nil,
 //	//		WantErrVarName: `N/A`,
-//	//		Func: func(test_item *TestBenchData_func_parseGpsdJSON) error {
+//	//		Func: func(testItem *TestBenchData_func_parseGpsdJSON) error {
 //	//			var (
 //	//				d *Data
 //	//			)
@@ -125,7 +125,7 @@ package gps
 //	//		WantData:       &Data{},
 //	//		WantErr:        nil,
 //	//		WantErrVarName: `N/A`,
-//	//		Func: func(test_item *TestBenchData_func_parseGpsdJSON) error {
+//	//		Func: func(testItem *TestBenchData_func_parseGpsdJSON) error {
 //	//			var (
 //	//				d *Data
 //	//			)
@@ -139,7 +139,7 @@ package gps
 //	//		WantData:       &Data{},
 //	//		WantErr:        nil,
 //	//		WantErrVarName: `N/A`,
-//	//		Func: func(test_item *TestBenchData_func_parseGpsdJSON) error {
+//	//		Func: func(testItem *TestBenchData_func_parseGpsdJSON) error {
 //	//			var (
 //	//				d *Data
 //	//			)
@@ -152,52 +152,52 @@ package gps
 ////TestFunc_parseGpsdJSON tests func parseGpsdJSON
 //func TestFunc_parseGpsdJSON(t *testing.T) {
 //	var (
-//		got_err  error
+//		gotErr  error
 //		data_err error
 //		d        *Data
 //	)
-//	for _, test_item := range tb_parseGpsdJSON_table {
+//	for _, testItem := range tb_parseGpsdJSON_table {
 //		d = &Data{}
-//		got_err = d.parseGpsdJSON(test_item.Class, test_item.Payload)
+//		gotErr = d.parseGpsdJSON(testItem.Class, testItem.Payload)
 
-//		if test_item.HasFunc == true {
-//			if test_item.Func == nil {
+//		if testItem.HasFunc == true {
+//			if testItem.Func == nil {
 //				t.Fail()
-//				t.Fatal("'test_item.Func' is nil.\n", "Test data:\n\t%s\n", test_item)
+//				t.Fatal("'testItem.Func' is nil.\n", "Test data:\n\t%s\n", testItem)
 //				return
 //			}
-//			if data_err = test_item.Func(test_item); data_err != nil {
+//			if data_err = testItem.Func(testItem); data_err != nil {
 //				t.Error("TEST ERROR: Got incorrect gpsd.Data structure: ", d, ".\n\nWant: ",
-//					test_item.WantData)
-//				t.Errorf("Test data:\n\t%s\n", test_item)
+//					testItem.WantData)
+//				t.Errorf("Test data:\n\t%s\n", testItem)
 //				t.Fail()
 //				return
 //			}
 //		}
 
-//		if got_err != nil {
-//			if test_item.WantErr != nil {
-//				if strings.Compare(got_err.Error(), test_item.WantErr.Error()) != 0 {
+//		if gotErr != nil {
+//			if testItem.WantErr != nil {
+//				if strings.Compare(gotErr.Error(), testItem.WantErr.Error()) != 0 {
 //					t.Errorf("TEST ERROR: Got error: %s\nWant error: %s \n\twith content: %s",
-//						got_err.Error(), test_item.WantErrVarName, test_item.WantErr.Error())
-//					t.Errorf("Test data:\n\t%s\n", test_item)
+//						gotErr.Error(), testItem.WantErrVarName, testItem.WantErr.Error())
+//					t.Errorf("Test data:\n\t%s\n", testItem)
 //					t.Fail()
 //					return
 //				}
 //			}
-//			if test_item.WantErr == nil {
+//			if testItem.WantErr == nil {
 //				t.Errorf("TEST ERROR: Got error: %s\nWant error: <nil> \n",
-//					got_err.Error())
-//				t.Errorf("Test data:\n\t%s\n", test_item)
+//					gotErr.Error())
+//				t.Errorf("Test data:\n\t%s\n", testItem)
 //				t.Fail()
 //				return
 //			}
 //		}
-//		if got_err == nil {
-//			if test_item.WantErr != nil {
+//		if gotErr == nil {
+//			if testItem.WantErr != nil {
 //				t.Errorf("TEST ERROR: Got error: <nil>\nWant error: %s \n\twith content: %s",
-//					test_item.WantErrVarName, test_item.WantErr.Error())
-//				t.Errorf("Test data:\n\t%s\n", test_item)
+//					testItem.WantErrVarName, testItem.WantErr.Error())
+//				t.Errorf("Test data:\n\t%s\n", testItem)
 //				t.Fail()
 //				return
 //			}

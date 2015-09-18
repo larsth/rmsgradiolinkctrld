@@ -67,7 +67,7 @@ func TestScanner_ReadFromNilIoReader(t *testing.T) {
 	}
 }
 
-func TestScanner_ReadFromIoReader(t *testing.T) {
+func TestScanner_ReadFromStructFields(t *testing.T) {
 	var (
 		s                *Scanner
 		buf_struct_field bytes.Buffer

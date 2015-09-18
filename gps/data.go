@@ -12,8 +12,8 @@ import "bytes"
 // made concurrency safe with a read-write mutex, because it is accessed
 // concurrently by more than 1 go routine.
 type Data struct {
-	ThisGps  GPSCoord `"json:this_gps"`
-	OtherGps GPSCoord `"json:other_gps"`
+	ThisGps  GPSCoord `json:"this_gps"`
+	OtherGps GPSCoord `json:"other_gps"`
 	_        struct{} // to prevent unkeyed literals
 }
 
