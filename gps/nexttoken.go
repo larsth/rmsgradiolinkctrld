@@ -47,27 +47,26 @@ func (s *Scanner) consume() {
 	}
 }
 
-func (s *Scanner) LINE(t *Token) {
-	//	for len(s.input) > 0 {
-	//		if isLetter(s.c) {
-	//			s.p++
-	//		} else {
-	//			break
-	//		}
-	//	}
-	//	t.Ident = TokenIdentLine
-	//	if s.p == 0 {
-	//		t.Error = io.EOF
-	//		t.Runes = nil
-	//	} else {
-	//		t.Error = nil
-	//		out := s.input[0:s.p]
-	//		t.Runes = make([]rune, 0, len(out))
-	//		copy(t.Runes, out)
-	//		//reslice s.input:
-	//		s.input = append(s.input[p:]...)
-	//		s.p = 0
-	//	}
+//matchLINE matches a LINE token input
+func (s *Scanner) matchLINE(t *Token) {
+	for len(s.input) > 0 {
+		if isLetter(s.c) {
+			if len(t.Runes) == 0 {
+				t.Runes = <-s.ggc.GetRunes
+			}
+			t.Runes = append(t.Runes, s.c)
+			s.consume()
+		} else {
+			break
+		}
+	}
+
+	if len(t.Runes) > 0 {
+		t.Ident = TokenIdentLine
+		t.Error = nil
+		return
+	}
+	//else:
 	return
 }
 
@@ -94,7 +93,7 @@ func (s *Scanner) NextToken() (t Token) {
 		s.consume()
 	default:
 		if isLetter(s.c) {
-			s.LINE(&t)
+			s.matchLINE(&t)
 		} else {
 			t.Error = fmt.Errorf("Unexpected character: '%v'\n\n", s.c)
 			t.Ident = TokenIdentError
@@ -103,131 +102,3 @@ func (s *Scanner) NextToken() (t Token) {
 	}
 	return
 }
-
-//func (s *Scanner) readFromScanBuffer(t *Token) {
-//	const i int = 0
-//	var (
-//		j         int  = 0
-//		doReslice bool = false
-//	)
-//	if len(s.inputBuffer) == 0 {
-//		t.Error = io.EOF
-//		t.Ident = TokenIdentIoEOF
-//	} else {
-//		for j < len(s.inputBuffer) {
-//			doReslice = true
-//			if s.inputBuffer[j] == '\r' || s.inputBuffer[j] == '\n' {
-//				if t.Ident == TokenIdentLine {
-//					break
-//				}
-//				if s.inputBuffer[j] == '\r' {
-//					t.Ident = TokenIdentSlashR
-//					t.Value = []byte{'\r'}
-//				}
-//				if s.inputBuffer[j] == '\n' {
-//					t.Ident = TokenIdentSlashN
-//					t.Value = []byte{'\n'}
-//				}
-//			} else {
-//				//add to ouput buffer:
-//				s.outputbuffer = append(s.outputbuffer, s.inputBuffer[j])
-//			}
-//		}
-//		if doReslice == true {
-//			//cut bytes from index i (included) to index j (excluded):
-//			s.inputBuffer = append(s.inputBuffer[:i], s.inputBuffer[j:]...)
-//		}
-//	}
-//}
-
-//func (s *Scanner) Scan1() (t Token) {
-//	var (
-//		p   []byte
-//		n   int
-//		err error
-//	)
-//	s.mutex.Lock()
-//	defer s.mutex.Unlock()
-
-//	if s.ioReader == nil {
-//		t.Error = ErrIoNilReader
-//		t.Ident = TokenIdentError
-//		return
-//	}
-
-//	//1st: Read from the buffer:
-//	s.readFromScanBuffer(&t)
-//	if t.Ident != TokenIdentError && t.Ident != TokenIdentIoEOF &&
-//		t.Ident != TokenIdentWasPrefixed {
-//		//TokenIdentLine, or TokenIdentSlashN or TokenIdentSlashR
-//		//was recieved from the buffer:
-//		return
-//	}
-
-//	//2nd: Read from the s.ioReader:
-//	p = make([]byte, 4096)
-//	n, err = s.ioReader.Read(p)
-
-//	if err != io.EOF {
-//		t.Error = io.EOF
-//		t.Ident = TokenIdentIoEOF
-//		return
-//	}
-//	if err != nil {
-//		t.Error = err
-//		t.Ident = TokenIdentError
-//		return
-//	}
-
-//	//n > 0:
-//	s.scanBuf = append(s.scanBuf, p[0:n]...)
-
-//	//Below:
-//	//This is an invitation to call Scan again:
-//	t.Ident = TokenIdentWasPrefixed
-
-//	return
-//}
-
-//func (coord *GPSCoord) Scan0() (isPrefixed bool, token []byte, err error) {
-//	var (
-//		p           []byte = make([]byte, 256)
-//		n           int
-//		indexSlashN int
-//		indexSlashR int
-//		jsonDocN    []byte
-//		jsonDoc     []byte
-//	)
-
-//
-//		indexSlashN = bytes.IndexByte(coord.scanBuf, '\n')
-//		if indexSlashN != -1 {
-//			//coord.scanBuf has a '\n' at 'indexSlashN':
-//			isPrefixed = false
-//			jsonDocN = coord.scanBuf[0:indexSlashN]
-
-//			indexSlashR = bytes.IndexByte(jsonDocN, '\r')
-//			if indexSlashR != -1 {
-//				//jsonDocN has a '\r' at 'indexSlashR':
-//				jsonDoc = jsonDocN[0:indexSlashR]
-//			} else {
-//				//jsonDocN does not have a '\r' at 'indexSlashR':
-//				jsonDoc = jsonDocN
-//			}
-
-//			token = make([]byte, len(jsonDoc))
-//			copy(token, jsonDoc)
-//			p = nil
-//			jsonDocN = nil
-//			jsonDoc = nil
-//			//nuke the coord.scanBuf buffer:
-//			coord.scanBuf = make([]byte, DefaultBufferSize)
-//		} else {
-//			isPrefixed = true
-//			//Content had already been appended.
-//		}
-//		return isPrefixed, nil, nil //no token, and no error
-//	}
-//	//else: n == 0 is true:
-//	return false, nil, nil //is not prefixed, no token, and no error
-//}
