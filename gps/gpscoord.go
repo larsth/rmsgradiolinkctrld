@@ -2,7 +2,6 @@ package gps
 
 import (
 	"bytes"
-	"errors"
 	"math"
 	"strconv"
 	"sync"
@@ -11,28 +10,16 @@ import (
 	"github.com/larsth/rmsgradiolinkctrld/gpsd"
 )
 
-var (
-	ErrSameLocation                  error = errors.New("The 2 GPS coordinates are the same location.")
-	ErrOtherGPSCoordIsNil            error = errors.New("The `other` *GPSCoord pointer is nil.")
-	ErrThisGPSCoordHasZeroTimestamp  error = errors.New("The `this` TimeStamp is Zero: 0")
-	ErrOtherGPSCoordHasZeroTimestamp error = errors.New("The `other`TimeStamp is Zero: 0")
-)
-
-var (
-	ErrNoPollFixes = errors.New("No POLL fixes (No TPV JSON documents)")
-)
-
 type GPSCoord struct {
-	mutex        sync.Mutex
-	jsonDocument []byte
+	mutex sync.Mutex
 
 	ID                string       `json:"id"`
 	RecievedTimeStamp time.Time    `json:"datetime_iso3339"`
 	Fix               gpsd.FixMode `json:"fix"` //FixNotSeen,FixNone,Fix2D,Fix3D
 
-	Lat float64 `json:"lat"` //Lattitude - breddegrad
-	Lon float64 `json:"lon"` //Longitude - længdegrad
-	Alt float64 `json:"alt"` //Altitude - højden
+	Lat float64 `json:"lat,omitempty"` //Lattitude - breddegrad
+	Lon float64 `json:"lon,omitempty"` //Longitude - længdegrad
+	Alt float64 `json:"alt,omitempty"` //Altitude - højden
 
 	GpsdError         string    `json:"gpsd_error,omitempty"`
 	GpsdErrorDateTime time.Time `json:"gpsd_error_datetime_iso3339,omitempty"`
